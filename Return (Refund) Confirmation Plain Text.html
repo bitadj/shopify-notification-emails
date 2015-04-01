@@ -1,0 +1,19 @@
+{% assign bill_phone = billing_address.phone | split: '' %}{% capture billing_phone %}({{ bill_phone[0] }}{{ bill_phone[1] }}{{ bill_phone[2] }}) {{ bill_phone[4] }}{{ bill_phone[5] }}{{ bill_phone[6] }}-{{ bill_phone[8] }}{{ bill_phone[9] }}{{ bill_phone[10] }}{{ bill_phone[11] }}{% endcapture %}{% assign ship_phone = shipping_address.phone | split: '' %}{% capture shipping_phone %}({{ ship_phone[0] }}{{ ship_phone[1] }}{{ ship_phone[2] }}) {{ ship_phone[4] }}{{ ship_phone[5] }}{{ ship_phone[6] }}-{{ ship_phone[8] }}{{ ship_phone[9] }}{{ ship_phone[10] }}{{ ship_phone[11] }}{% endcapture %}Dear {{ billing_address.name }}, 
+
+Thank you for shopping with de Fête.
+
+Your return package has made its way back to our warehouse! Your refund will be credited back to your original method of payment and should appear on your billing statement within the next 1-2 billing cycles.
+
+The items below have been refunded to your {{ unique_gateways.first }}.
+
+Sincerely, 
+The de Fête Team
+  
+Return Summary
+{% for line in refund_line_items %}
+{{line.line_item.title }}
+Quantity: {{ line.quantity }}{% assign line_tax = 0 %}{% for tax_line in tax_lines %}{% capture temp_tax %}{{ line.line_item.price | times: tax_line.rate | floor }}{% endcapture %}{% assign line_tax = line_tax | plus: temp_tax %}{% endfor %}
+$ {{ line.line_item.price | plus: line_tax | money_without_currency }}
+{% endfor %}{% if discounts %}Discount Code ()   :   $ ({{ discounts_savings | money_without_currency }})
+{% endif %}
+Total ({{ unique_gateways.first | upcase }})   :   $ {{ amount | money_without_currency }}

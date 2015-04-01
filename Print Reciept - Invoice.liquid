@@ -1,0 +1,126 @@
+<div style="padding: 30px;">
+	<div style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; float: left; margin: 0 0 1.5em 0; width: 100%;" >
+		<img src="https://cdn.shopify.com/s/files/1/0631/1541/files/De_Fete_Logo_-black_and_white.png?12717247643184714587" width="100px"><br><br>
+	  {{ shop.city }}  //  {{ shop.domain }}<br>
+	</div>
+
+	<div style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; width: 100%; text-align:center;">
+		<strong style="font-family: 'PT Sans Narrow', sans-serif; font-size:medium;" >RECEIPT</strong>
+	</div>
+
+	<hr style="border: 0;
+		height: 0;
+		border-bottom: 1px solid grey;">
+
+	<div style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; margin-top: 2.5em; margin-bottom: .5em;">
+		<strong style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;">ORDER NUMBER:&nbsp;&nbsp;</strong>{{ name }}
+	</div>
+
+	<div style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; margin-top: .5em; margin-bottom: 2.5em;">
+		<strong style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;">ORDER DATE:&nbsp;&nbsp;</strong>{{ date | date: "%D" }}
+	</div>	
+
+	<table width="80%" style="margin-bottom: ">
+		<thead>
+			<th style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: 1px solid grey;" >
+				SHIPPING
+			</th>
+			<th width="30%"></th>
+			<th style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: 1px solid grey;" >
+				BILLING
+			</th>
+		</thead>
+		<tbody>
+			<td width="35%" style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; margin: 1em 0 0 0; padding-top: 1.2em;">
+				{% if shipping_address %}
+					<strong style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;" >{{ shipping_address.name }}</strong><br>
+					{% if shipping_address.company %}
+					  {{ shipping_address.company }}<br>
+					{% endif %}
+					{{ shipping_address.street }}<br>
+					{{ shipping_address.city }}
+					{{ shipping_address.province_code }}
+					{{ shipping_address.zip | upcase }}<br>
+					{{ shipping_address.country }}
+				{% endif %}
+			</td>
+			<td width="30%"></td>
+			<td width="35%" style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; margin: 1em 0 0 0 0; padding-top: 1.2em;">
+				{% if billing_address %}
+					<strong style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;" >{{ billing_address.name }}</strong><br>
+					{% if billing_address.company %}
+					  {{ billing_address.company }}<br>
+					{% endif %}
+					{{ billing_address.street }}<br>
+					{{ billing_address.city }}
+					{{ billing_address.province_code }}
+					{{ billing_address.zip | upcase }}<br>
+					{{ billing_address.country }}
+				{% endif %}			
+			</td>
+		</tbody>
+	</table>
+
+	<div style="margin-top: 1.5em; margin-bottom:1.1em;">
+		<strong style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;">SHIPPING INFORMATION</strong>
+	</div>
+
+	<table class="table-tabular" style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; margin: 0 0 1.5em 0; border: 1px solid grey;">
+	  <thead>
+		<tr>
+		  <th style="font-family: 'PT Sans Narrow', sans-serif; border-bottom: 1px solid grey; border-left: 1px solid grey; font-size:x-small; width: 25%;" >Style Number</th>
+		  <th style="font-family: 'PT Sans Narrow', sans-serif; border-bottom: 1px solid grey; border-left: 1px solid grey; font-size:x-small;" >Item</th>
+		  <th style="font-family: 'PT Sans Narrow', sans-serif; border-bottom: 1px solid grey; border-left: 1px solid grey; font-size:x-small; text-align:center;" >Quantity</th>
+		  <th style="font-family: 'PT Sans Narrow', sans-serif; border-bottom: 1px solid grey; border-left: 1px solid grey; font-size:x-small; text-align:right;" >Price</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		{% for line_item in line_items %}
+		  <tr>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; border-bottom: 1px solid grey; border-left: 1px solid grey; font-size:x-small; width: 25%;" >{{ line_item.sku  | remove: "-" }}</td>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; border-bottom: 1px solid grey; border-left: 1px solid grey; font-size:x-small;" ><b style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;" >{{ line_item.title }}</b></td>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; border-bottom: 1px solid grey; border-left: 1px solid grey; font-size:x-small; text-align:center;" >{{ line_item.quantity }}</td>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; border-bottom: 1px solid grey; border-left: 1px solid grey; font-size:x-small; text-align:right;" >{{ line_item.price | money }}</td>
+		  </tr>
+		{% endfor %}
+	  </tbody>
+	</table>
+
+	<div style="width: 100%;">
+		<table class="table-tabular" style="margin: 0 0 1.5em 0; float:right; width: 45%; border: 1px solid grey;">
+		  <tr>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: none; text-align: right; padding-top: 6.5px;" >SUBTOTAL</td>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: none; text-align: left;" >$ {{ subtotal_price | money_without_currency }}</td>
+		  </tr>
+		  {% if discounts %}
+		  <tr>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: none; text-align: right; padding-top: 0; padding-top: 6.5px;" >DISCOUNT ({{ discount.code }})</td>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: none; padding-top: 0; text-align: left;">$ ({{ discounts_savings | money_without_currency }})</td>
+		  </tr>
+		  {% endif %}
+		  <tr>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: none; text-align: right; padding-top: 0;" >TAX</td>
+			<td style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: none; padding-top: 0; text-align: left;">$ {{ tax_price | money_without_currency }}</td>
+		  </tr>
+		  {% if shipping_address %}
+			<tr>
+			  <td style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: none; padding-top: 0; text-align: right;" >SHIPPING ({{ shipping_method.title | upcase }})</td>
+			  <td style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; border-bottom: none; padding-top: 0; text-align: left;">$ {{ shipping_price | money_without_currency }}</td>
+			</tr>
+		  {% endif %}
+		  <tr>
+			<td style="text-align: right; padding: 0 5px .5em 5px; border-bottom: none; "><strong style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;">TOTAL ({{ gateways.first | upcase }})</strong></td>
+			<td style="text-align: left; padding: 0 5px .5em 5px; border-bottom: none; "><strong style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; " >$ {{ total_price | money_without_currency }}</strong></td>
+		  </tr>
+		</table>
+	</div>
+	{% if note %}
+	  <h3 style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small; margin: 0 0 1em 0;">Note</h3>
+	  <p style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;" >{{ note }}</p>
+	{% endif %}
+	<div style="width: 100%">
+		<p style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;" >If you have any questions, please send an email to <strong style="font-family: 'PT Sans Narrow', sans-serif; font-size:x-small;" >{{ shop.email }}</strong></p>
+	</div>
+	
+
+</div>

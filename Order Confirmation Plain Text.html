@@ -1,0 +1,39 @@
+{% assign bill_phone = billing_address.phone | split: '' %}{% capture billing_phone %}({{ bill_phone[0] }}{{ bill_phone[1] }}{{ bill_phone[2] }}) {{ bill_phone[4] }}{{ bill_phone[5] }}{{ bill_phone[6] }}-{{ bill_phone[8] }}{{ bill_phone[9] }}{{ bill_phone[10] }}{{ bill_phone[11] }}{% endcapture %}{% assign ship_phone = shipping_address.phone | split: '' %}{% capture shipping_phone %}({{ ship_phone[0] }}{{ ship_phone[1] }}{{ ship_phone[2] }}) {{ ship_phone[4] }}{{ ship_phone[5] }}{{ ship_phone[6] }}-{{ ship_phone[8] }}{{ ship_phone[9] }}{{ ship_phone[10] }}{{ ship_phone[11] }}{% endcapture %}Thank you for your de Fête order!
+
+You’ll get another email when we’re ready to ship!
+
+Order Number: {{ name }}
+Order Date: {{ created_at | date: "%D" }}
+  
+  Billing Address
+    {{ billing_address.name }}
+    {{ billing_address.street }}
+    {{ billing_address.city }}, {{ billing_address.province }} {{ billing_address.zip }}
+    {{ billing_phone }}
+    {{ email }}
+
+  Shipping Address
+    {{ shipping_address.name }}
+    {{ shipping_address.street }}
+    {{ shipping_address.city }}, {{ shipping_address.province }} {{ shipping_address.zip }}
+    {{ shipping_phone }}
+    {{ email }}
+
+  
+  Order Summary
+{% for line in line_items %}
+    {{line.title | upcase }}
+    Quantity: {{ line.quantity }}
+    $ {{ line.price | money_without_currency }}
+{% endfor %}
+
+    Subtotal:
+                   $ {{ subtotal_price | money_without_currency  }}
+    Shipping ({{ shipping_method.title }}):
+                   $ {{ shipping_price | money_without_currency }}
+    Tax:
+                   $ {{ tax_lines.first.price | money_without_currency }}{% if discounts %}
+    Discount Code ({{ discount.code }}):
+                   $ ({{ discounts_savings | money_without_currency }}){% endif %}
+    Total ({{ unique_gateways.first }}):
+                   $ {{ total_price | money_without_currency }}
